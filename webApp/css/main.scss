@@ -1,0 +1,137 @@
+$felt: #6fc391;
+$headerHeight: 50px;
+$footerHeight: 50px;
+$cardHeight: 110px;
+$cardWidth: 80px;
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: white;
+}
+header,
+footer {
+    display: flex;
+    align-items: center;
+    background-color: black;
+    padding: 10px;
+    width: calc(100% - 20px);
+}
+header {
+    justify-content: flex-end;
+    height: calc($headerHeight - 20px);
+}
+footer {
+    height: calc($footerHeight - 20px);
+}
+
+main {
+    height: calc(100% - 100px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    .gameArea {
+        height: 800px;
+        width: 800px;
+        max-height: 100%;
+        max-width: 100%;
+        .table {
+            $padding: 100px;
+            padding: $padding;
+            height: calc(100% - (2 * $padding));
+            width: calc(100% - (2 * $padding));
+            position: relative;
+            .felt {
+                background-color: $felt;
+                height: 100%;
+                width: 100%;
+            }
+            .card {
+                --cardCol: 1;
+                --cardRow: 1;
+                --position: 0;
+                --total: 1;
+
+                position: absolute;
+                bottom: calc(100% + 50px);
+                transform: translateX(-50%);
+                height: $cardHeight;
+                width: $cardWidth;
+                background: url("../img/cards.gif") no-repeat;
+                background-size: 1300% 500%;
+                background-position: calc(-1 * ($cardWidth * var(--cardCol))) calc(-1 * ($cardHeight * var(--cardRow)));
+                left: calc(50% + (var(--position) * $cardWidth / 2) - (var(--total) * $cardWidth / 4) + $cardWidth / 4);
+            }
+            .player {
+                background-color: black;
+                width: 30px;
+                height: 30px;
+                position: absolute;
+                $playerMargin: calc($padding / 2);
+                border-radius: 50%;
+                &.player3 {
+                    top: $playerMargin;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    .card {
+                        top: calc(100% + 50px);
+                    }
+                }
+                &.player2 {
+                    top: 50%;
+                    left: $playerMargin;
+                    transform: translate(-50%, -50%);
+                    .card {
+                        top: calc(50% + (var(--position) * $cardWidth / 3) - (var(--total) * $cardWidth / 6) - $cardWidth / 2);
+                        left: calc(100% + 60px);
+                        transform: rotate(90deg);
+                    }
+                }
+                &.player1 {
+                    bottom: $playerMargin;
+                    left: 50%;
+                    transform: translate(-50%, 50%);
+                }
+                &.player4 {
+                    top: 50%;
+                    right: $playerMargin;
+                    transform: translate(50%, -50%);
+                    .card {
+                        top: calc(50% + (var(--position) * $cardWidth /3) - (var(--total) * $cardWidth / 6) - $cardWidth / 2);
+                        right: calc(100% + 60px);
+                        left: unset;
+                        transform: rotate(90deg);
+                    }
+                }
+                &::after {
+                    content: "";
+                    position: absolute;
+                    display: block;
+                    background-color: red;
+                    width: 10px;
+                    height: 10px;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    border-radius: 50%;
+                }
+                &::before {
+                    content: "";
+                    position: absolute;
+                    display: block;
+                    background-color: green;
+                    width: 20px;
+                    height: 20px;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    border-radius: 50%;
+                }
+            }
+        }
+    }
+}
