@@ -3,6 +3,7 @@ $headerHeight: 50px;
 $footerHeight: 50px;
 $cardHeight: 110px;
 $cardWidth: 80px;
+$cardGap: 20px;
 
 html,
 body {
@@ -65,6 +66,9 @@ main {
                 background-size: 1300% 500%;
                 background-position: calc(-1 * ($cardWidth * var(--cardCol))) calc(-1 * ($cardHeight * var(--cardRow)));
                 left: calc(50% + (var(--position) * $cardWidth / 2) - (var(--total) * $cardWidth / 4) + $cardWidth / 4);
+                &.disabled{
+                    filter: brightness(0.5);
+                }
             }
             .player {
                 background-color: black;
@@ -79,6 +83,9 @@ main {
                     transform: translate(-50%, -50%);
                     .card {
                         top: calc(100% + 50px);
+                        &.played{
+                            top: calc(100% + 50px +  $cardHeight + $cardGap);
+                        }
                     }
                 }
                 &.player2 {
@@ -89,12 +96,20 @@ main {
                         top: calc(50% + (var(--position) * $cardWidth / 3) - (var(--total) * $cardWidth / 6) - $cardWidth / 2);
                         left: calc(100% + 60px);
                         transform: rotate(90deg);
+                        &.played{
+                            left: calc(100% + 60px +  $cardHeight + $cardGap);
+                        }
                     }
                 }
                 &.player1 {
                     bottom: $playerMargin;
                     left: 50%;
                     transform: translate(-50%, 50%);
+                    .card {
+                        &.played{
+                            bottom: calc(100% + 50px +  $cardHeight + $cardGap);
+                        }
+                    }
                 }
                 &.player4 {
                     top: 50%;
@@ -105,6 +120,9 @@ main {
                         right: calc(100% + 60px);
                         left: unset;
                         transform: rotate(90deg);
+                        &.played{
+                            right: calc(100% + 60px +  $cardHeight + $cardGap);
+                        }
                     }
                 }
                 &::after {
