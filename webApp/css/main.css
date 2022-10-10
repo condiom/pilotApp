@@ -64,6 +64,9 @@ main .gameArea .table .card {
   background-position: calc(-1 * 80px * var(--cardCol)) calc(-1 * 110px * var(--cardRow));
   left: calc(50% + var(--position) * 80px / 2 - var(--total) * 80px / 4 + 20px);
 }
+main .gameArea .table .card.disabled {
+  filter: brightness(0.5);
+}
 main .gameArea .table .player {
   background-color: black;
   width: 30px;
@@ -79,6 +82,9 @@ main .gameArea .table .player.player3 {
 main .gameArea .table .player.player3 .card {
   top: calc(100% + 50px);
 }
+main .gameArea .table .player.player3 .card.played {
+  top: calc(100% + 50px + 110px + 20px);
+}
 main .gameArea .table .player.player2 {
   top: 50%;
   left: 50px;
@@ -89,10 +95,16 @@ main .gameArea .table .player.player2 .card {
   left: calc(100% + 60px);
   transform: rotate(90deg);
 }
+main .gameArea .table .player.player2 .card.played {
+  left: calc(100% + 60px + 110px + 20px);
+}
 main .gameArea .table .player.player1 {
   bottom: 50px;
   left: 50%;
   transform: translate(-50%, 50%);
+}
+main .gameArea .table .player.player1 .card.played {
+  bottom: calc(100% + 50px + 110px + 20px);
 }
 main .gameArea .table .player.player4 {
   top: 50%;
@@ -104,6 +116,9 @@ main .gameArea .table .player.player4 .card {
   right: calc(100% + 60px);
   left: unset;
   transform: rotate(90deg);
+}
+main .gameArea .table .player.player4 .card.played {
+  right: calc(100% + 60px + 110px + 20px);
 }
 main .gameArea .table .player::after {
   content: "";
