@@ -4,6 +4,8 @@ $footerHeight: 50px;
 $cardHeight: 110px;
 $cardWidth: 80px;
 $cardGap: 20px;
+$cardSpacer: 50px;
+$animaHeight: 60px;
 
 html,
 body {
@@ -50,6 +52,94 @@ main {
                 background-color: $felt;
                 height: 100%;
                 width: 100%;
+                position: relative;
+                .anima {
+                    background-color: #fff;
+                    height: calc(100% - (2 * ($cardHeight + $cardSpacer)));
+                    width: calc(100% - (2 * ($cardHeight + $cardSpacer)));
+                    top: 50%;
+                    left: 50%;
+                    position: absolute;
+                    transform: translate(-50%, -50%);
+                    border-radius: 8px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: flex-end;
+                    .actions {
+                        display: flex;
+                        justify-content: space-between;
+                        .action {
+                            height: 40px;
+                            border: 3px solid;
+                            border-radius: 8px;
+                            flex: 0 0 calc(50% - 10px);
+                            display: flex;
+                            justify-content: space-around;
+                            align-items: center;
+                            cursor: pointer;
+                            &.disabled {
+                                opacity: 0.5;
+                                pointer-events: none;
+                            }
+                        }
+                    }
+                    .nums {
+                        display: flex;
+                        padding: 10px;
+                        justify-content: space-between;
+                        overflow-x: scroll;
+                        .num {
+                            padding: 10px;
+                            margin-right: 10px;
+                            background-color: #fff;
+                            filter: brightness(0.5);
+                            cursor: pointer;
+                            border: 3px solid;
+                            border-radius: 8px;
+                            flex: 0 0 24px;
+                            display: flex;
+                            justify-content: space-around;
+                            align-items: center;
+                            &:last-child {
+                                margin-right: 0;
+                            }
+                            &.selected {
+                                filter: brightness(1);
+                            }
+                        }
+                    }
+                    .suits {
+                        display: flex;
+                        padding: 10px;
+                        justify-content: space-between;
+                        .suit {
+                            flex: 0 0 40px;
+                            height: 46px;
+                            background-color: #fff;
+                            background: url("../img/cards.gif") no-repeat;
+                            background-size: 2300% 1150%;
+                            border-radius: 8px;
+                            border: 3px solid;
+                            cursor: pointer;
+                            filter: brightness(0.5);
+                            &.hearts {
+                                background-position: -15px -56px;
+                            }
+                            &.spades {
+                                background-position: -15px -269px;
+                            }
+                            &.diamonds {
+                                background-position: -15px -163px;
+                            }
+                            &.clubs {
+                                background-position: -15px -375px;
+                            }
+                            &.selected {
+                                filter: brightness(1);
+                            }
+                        }
+                    }
+                }
             }
             .card {
                 --cardCol: 1;
@@ -58,7 +148,7 @@ main {
                 --total: 1;
 
                 position: absolute;
-                bottom: calc(100% + 50px);
+                bottom: calc(100% + $cardSpacer + 5px);
                 transform: translateX(-50%);
                 height: $cardHeight;
                 width: $cardWidth;
@@ -66,8 +156,50 @@ main {
                 background-size: 1300% 500%;
                 background-position: calc(-1 * ($cardWidth * var(--cardCol))) calc(-1 * ($cardHeight * var(--cardRow)));
                 left: calc(50% + (var(--position) * $cardWidth / 2) - (var(--total) * $cardWidth / 4) + $cardWidth / 4);
-                &.disabled{
+                &.disabled {
                     filter: brightness(0.5);
+                }
+            }
+            .animaAction {
+                background-color: #fff;
+                border-radius: 8px;
+                position: absolute;
+                z-index: 1;
+                height: $animaHeight;
+                width: $animaHeight;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: 1px solid #000;
+                &.open{
+                    color: #ffffff;
+                    font-size: 12px;
+                    font-weight: bold;
+                    span{
+                        margin-top: 3px;
+                    }
+                }
+                &.hearts,
+                &.spades,
+                &.diamonds,
+                &.clubs{
+                    background: url("../img/cards.gif") no-repeat;
+                }
+                &.hearts {
+                    background-position: -23px -72px;
+                    background-size: 2300% 1150%;
+                }
+                &.spades {
+                    background-position: -23px -350px;
+                    background-size: 2300% 1150%;
+                }
+                &.diamonds {
+                    background-position: -23px -210px;
+                    background-size: 2300% 1150%;
+                }
+                &.clubs {
+                    background-position: -23px -488px;
+                    background-size: 2300% 1150%;
                 }
             }
             .player {
@@ -82,10 +214,15 @@ main {
                     left: 50%;
                     transform: translate(-50%, -50%);
                     .card {
-                        top: calc(100% + 50px);
-                        &.played{
-                            top: calc(100% + 50px +  $cardHeight + $cardGap);
+                        top: calc(100% + $cardSpacer + 5px);
+                        &.played {
+                            top: calc(100% + $cardSpacer + $cardHeight + $cardGap - 5px);
                         }
+                    }
+                    .animaAction {
+                        top: calc(100% - 5px + ($cardHeight / 2) + ($animaHeight / 2));
+                        left: 50%;
+                        transform: translateX(-50%);  
                     }
                 }
                 &.player2 {
@@ -94,11 +231,16 @@ main {
                     transform: translate(-50%, -50%);
                     .card {
                         top: calc(50% + (var(--position) * $cardWidth / 3) - (var(--total) * $cardWidth / 6) - $cardWidth / 2);
-                        left: calc(100% + 60px);
+                        left: calc(100% + $cardSpacer + 20px);
                         transform: rotate(90deg);
-                        &.played{
-                            left: calc(100% + 60px +  $cardHeight + $cardGap);
+                        &.played {
+                            left: calc(100% + $cardSpacer + 10px + $cardHeight + $cardGap);
                         }
+                    }
+                    .animaAction {
+                        left: calc(100% - 5px + ($cardHeight / 2) + ($animaHeight / 2));
+                        top: 50%;
+                        transform: translateY(-50%);  
                     }
                 }
                 &.player1 {
@@ -106,9 +248,14 @@ main {
                     left: 50%;
                     transform: translate(-50%, 50%);
                     .card {
-                        &.played{
-                            bottom: calc(100% + 50px +  $cardHeight + $cardGap);
+                        &.played {
+                            bottom: calc(100% + $cardSpacer + $cardHeight + $cardGap - 5px);
                         }
+                    }
+                    .animaAction {
+                        bottom: calc(100% - 5px + ($cardHeight / 2) + ($animaHeight / 2));
+                        left: 50%;
+                        transform: translateX(-50%);  
                     }
                 }
                 &.player4 {
@@ -116,15 +263,21 @@ main {
                     right: $playerMargin;
                     transform: translate(50%, -50%);
                     .card {
-                        top: calc(50% + (var(--position) * $cardWidth /3) - (var(--total) * $cardWidth / 6) - $cardWidth / 2);
-                        right: calc(100% + 60px);
+                        top: calc(50% + (var(--position) * $cardWidth / 3) - (var(--total) * $cardWidth / 6) - $cardWidth / 2);
+                        right: calc(100% + 70px);
                         left: unset;
                         transform: rotate(90deg);
-                        &.played{
-                            right: calc(100% + 60px +  $cardHeight + $cardGap);
+                        &.played {
+                            right: calc(100% + $cardSpacer + 10px + $cardHeight + $cardGap);
                         }
                     }
+                    .animaAction {
+                        right: calc(100% - 5px + ($cardHeight / 2) + ($animaHeight / 2));
+                        top: 50%;
+                        transform: translateY(-50%);  
+                    }
                 }
+
                 &::after {
                     content: "";
                     position: absolute;
