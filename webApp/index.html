@@ -17,7 +17,23 @@
         <main>
             <div class="gameArea">
                 <div class="table">
-                    <div class="felt"></div>
+                    <div class="felt">
+                        <div class="anima">
+                            <div class="nums">
+
+                            </div>
+                            <div class="suits">
+                                <div class="suit hearts" onclick="suitSelected('hearts', this)"></div>
+                                <div class="suit spades"  onclick="suitSelected('spades', this)"></div>
+                                <div class="suit diamonds" onclick="suitSelected('diamonds', this)"></div>
+                                <div class="suit clubs"  onclick="suitSelected('clubs', this)"></div>
+                            </div>
+                            <div class="actions">
+                                <div class="action pass" onclick="passAnima()" class="btn">Pass</div>
+                                <div class="action open" onclick="openAnima()" class="btn">Open</div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="player player1">
                     </div>
                     <div class="player player2"></div>

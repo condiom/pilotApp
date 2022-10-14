@@ -8,12 +8,21 @@ const cardPowerNormal = ["7", "8", "9", "J", "Q", "K", "10", "A"];
 const normalPoints = [0, 0, 0, 2, 3, 4, 10, 11];
 const PLAYERS_NUM = 4;
 const NO_SUIT_CODE = -1;
+const NO_NUM_CODE = -1;
+const NO_TEAM_CODE = -1;
 var lastPaza = -1;
-var currentPlayerTurn = 0;
+var currentPlayerTurn = -1;
 var currentPot = [];
 var currentKozi = "hearts";
 var currentSuit = "hearts";
 var round = 0;
+var players = [];
+var currentSelectedAnimaSuit = NO_SUIT_CODE;
+var currentSelectedAnimaNum = NO_NUM_CODE;
+var currentStrongestAnimaSuit = NO_SUIT_CODE;
+var currentStrongestAnimaNum = NO_NUM_CODE;
+var currentStrongestAnimaTeam = NO_TEAM_CODE;
+var currentPass = 0;
 
 var debug = {
     seeAllCards: false
@@ -147,6 +156,7 @@ function createDeck() {
     shuffle(cards);
     return cards;
 }
+
 function renderCards() {
     $(".card:not(.played)").remove();
     for (let i = 0; i < PLAYERS_NUM; i++) {
@@ -171,7 +181,7 @@ function renderCards() {
             if (card.suit == currentKozi && playedKozia.length > 0 && cardPowerKozia.indexOf(card.val) > cardPowerKozia.indexOf(playedKozia[0].playedCard.val)) {
                 hasMorePowerKozi = true;
             };
-            
+
         }
         for (let j = 0; j < players[i].cards.length; j++) {
             if (debug.seeAllCards || i == currentPlayerTurn) {
@@ -205,6 +215,7 @@ function renderCards() {
         }
     }
 }
+
 function nextPlayer() {
     currentPlayerTurn++;
     if (currentPlayerTurn == PLAYERS_NUM) {
@@ -212,11 +223,21 @@ function nextPlayer() {
     }
     renderCards();
 }
+
 function newRound() {
-    $(`.card.played`).remove();
-    currentPlayerTurn = 0;
+    $(".anima .nums").html("");
+    for (let i = 8; i < 65; i++) {
+        $(".anima .nums").append(`
+            <div class="num num-${i}"  onclick="numSelected('${i}', this)">${i}</div>
+        `);
+    }
     round = 0;
-    currentSuit = NO_SUIT_CODE;
+    currentSuit = NO_SUIT_CODE
+    currentSelectedAnimaSuit = NO_SUIT_CODE;
+    currentSelectedAnimaNum = NO_NUM_CODE;
+    currentStrongestAnimaSuit = NO_SUIT_CODE;
+    currentStrongestAnimaNum = NO_NUM_CODE;
+    currentStrongestAnimaTeam = NO_TEAM_CODE;
     for (let i = 0; i < PLAYERS_NUM; i++) {
         players[i].cards = [];
         players[i].cardsWon = [];
@@ -233,9 +254,91 @@ function newRound() {
             return cardSuitsOrder.indexOf(a.suit) - cardSuitsOrder.indexOf(b.suit);
         });
     }
+    $(`.anima`).show();
+    $(`.card.played`).remove();
+    nextPlayerAnima();
+}
+
+function nextPlayerAnima(){
+    currentSelectedAnimaSuit = NO_SUIT_CODE;
+    currentSelectedAnimaNum = NO_NUM_CODE;
+    currentPlayerTurn++;
+    if (currentPlayerTurn == PLAYERS_NUM) {
+        currentPlayerTurn = 0;
+    }
+    $(".actions .action.open").addClass("disabled"); 
+    numSelected(NO_NUM_CODE, this);
+    suitSelected(NO_SUIT_CODE, this);
     renderCards();
 }
-var players = [];
+
+function passAnima(){
+    currentPass++;
+    if(currentStrongestAnimaSuit != NO_SUIT_CODE && currentPass == 3){
+        currentPass = 0;
+        currentKozi = currentStrongestAnimaSuit;
+        console.log(currentStrongestAnimaNum, currentStrongestAnimaSuit);
+        $(".anima").hide();
+        $(`.player .animaAction`).remove();
+        return;
+    }
+    $(`.player${currentPlayerTurn + 1}`).append(`
+        <div class="animaAction pass"><span>Pass</span></div>
+    `);
+    $(`.player${((currentPlayerTurn + 1) % 4) + 1} .animaAction`).remove();
+    if(currentStrongestAnimaSuit == NO_SUIT_CODE && currentPass == 4){
+        currentPass = 0;
+        $(`.player .animaAction`).remove();
+        newRound();
+    }
+    nextPlayerAnima();
+}
+
+function openAnima(){
+    currentPass = 0;
+    currentStrongestAnimaSuit = currentSelectedAnimaSuit;
+    currentStrongestAnimaNum = parseInt(currentSelectedAnimaNum);
+    
+    currentSelectedAnimaSuit = NO_SUIT_CODE;
+    currentSelectedAnimaNum = NO_NUM_CODE;
+    
+    currentStrongestAnimaTeam = currentPlayerTurn % 2;
+    $(`.player${currentPlayerTurn + 1}`).append(`
+        <div class="animaAction open ${currentStrongestAnimaSuit}"><span>${currentStrongestAnimaNum}</span></div>
+    `);
+    $(`.player${((currentPlayerTurn + 1) % 4) + 1} .animaAction`).remove();
+
+    nextPlayerAnima();
+}
+
+function suitSelected(suit, e) {
+    $(".anima .suit").removeClass("selected");
+    if(suit == NO_SUIT_CODE){
+        return;
+    }
+    currentSelectedAnimaSuit = suit;
+    $(e).addClass("selected");
+    if(currentSelectedAnimaNum != NO_NUM_CODE){
+        $(".actions .action.open").removeClass("disabled");
+    }
+}
+
+function numSelected(num, e) {
+    if(num == NO_NUM_CODE){
+        num = currentStrongestAnimaNum >= 8 ? currentStrongestAnimaNum + 1 : 8;
+        e = $(`.anima .num-${num}`);
+        for(var i = 8; i <= currentStrongestAnimaNum; i++){
+            $(`.anima .num-${i}`).remove();
+        }
+    }
+    currentSelectedAnimaNum = num;
+    $(".anima .num").removeClass("selected");
+    $(e).addClass("selected");
+    if(currentSelectedAnimaSuit != NO_SUIT_CODE){
+        $(".actions .action.open").removeClass("disabled");
+    }
+}
+
 $(document).ready(function () {
     for (let i = 0; i < PLAYERS_NUM; i++) {
         players[i] = {
@@ -243,8 +346,22 @@ $(document).ready(function () {
         };
     }
     newRound();
-
-    // cardSelected(0, 0);
+    // currentSelectedAnimaSuit = cardSuits[0];
+    // currentSelectedAnimaNum = 8;
+    // openAnima();
+    // currentSelectedAnimaSuit = cardSuits[1];
+    // currentSelectedAnimaNum = 9;
+    // openAnima();
+    // currentSelectedAnimaSuit = cardSuits[2];
+    // currentStrongestAnimaNum = 10;
+    // openAnima();
+    // currentSelectedAnimaSuit = cardSuits[3];
+    // currentSelectedAnimaNum = 11;
+    // openAnima();
+    // currentSelectedAnimaSuit = cardSuits[0];
+    // currentSelectedAnimaNum = 11;
+    // // openAnima();
+    // // cardSelected(0, 0);
     // cardSelected(1, 0);
     // cardSelected(2, 0);
     // cardSelected(3, 0);

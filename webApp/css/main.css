@@ -48,6 +48,94 @@ main .gameArea .table .felt {
   background-color: #6fc391;
   height: 100%;
   width: 100%;
+  position: relative;
+}
+main .gameArea .table .felt .anima {
+  background-color: #fff;
+  height: calc(100% - 320px);
+  width: calc(100% - 320px);
+  top: 50%;
+  left: 50%;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+main .gameArea .table .felt .anima .actions {
+  display: flex;
+  justify-content: space-between;
+}
+main .gameArea .table .felt .anima .actions .action {
+  height: 40px;
+  border: 3px solid;
+  border-radius: 8px;
+  flex: 0 0 calc(50% - 10px);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  cursor: pointer;
+}
+main .gameArea .table .felt .anima .actions .action.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+main .gameArea .table .felt .anima .nums {
+  display: flex;
+  padding: 10px;
+  justify-content: space-between;
+  overflow-x: scroll;
+}
+main .gameArea .table .felt .anima .nums .num {
+  padding: 10px;
+  margin-right: 10px;
+  background-color: #fff;
+  filter: brightness(0.5);
+  cursor: pointer;
+  border: 3px solid;
+  border-radius: 8px;
+  flex: 0 0 24px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+main .gameArea .table .felt .anima .nums .num:last-child {
+  margin-right: 0;
+}
+main .gameArea .table .felt .anima .nums .num.selected {
+  filter: brightness(1);
+}
+main .gameArea .table .felt .anima .suits {
+  display: flex;
+  padding: 10px;
+  justify-content: space-between;
+}
+main .gameArea .table .felt .anima .suits .suit {
+  flex: 0 0 40px;
+  height: 46px;
+  background-color: #fff;
+  background: url("../img/cards.gif") no-repeat;
+  background-size: 2300% 1150%;
+  border-radius: 8px;
+  border: 3px solid;
+  cursor: pointer;
+  filter: brightness(0.5);
+}
+main .gameArea .table .felt .anima .suits .suit.hearts {
+  background-position: -15px -56px;
+}
+main .gameArea .table .felt .anima .suits .suit.spades {
+  background-position: -15px -269px;
+}
+main .gameArea .table .felt .anima .suits .suit.diamonds {
+  background-position: -15px -163px;
+}
+main .gameArea .table .felt .anima .suits .suit.clubs {
+  background-position: -15px -375px;
+}
+main .gameArea .table .felt .anima .suits .suit.selected {
+  filter: brightness(1);
 }
 main .gameArea .table .card {
   --cardCol: 1;
@@ -55,7 +143,7 @@ main .gameArea .table .card {
   --position: 0;
   --total: 1;
   position: absolute;
-  bottom: calc(100% + 50px);
+  bottom: calc(100% + 50px + 5px);
   transform: translateX(-50%);
   height: 110px;
   width: 80px;
@@ -66,6 +154,45 @@ main .gameArea .table .card {
 }
 main .gameArea .table .card.disabled {
   filter: brightness(0.5);
+}
+main .gameArea .table .animaAction {
+  background-color: #fff;
+  border-radius: 8px;
+  position: absolute;
+  z-index: 1;
+  height: 60px;
+  width: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #000;
+}
+main .gameArea .table .animaAction.open {
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: bold;
+}
+main .gameArea .table .animaAction.open span {
+  margin-top: 3px;
+}
+main .gameArea .table .animaAction.hearts, main .gameArea .table .animaAction.spades, main .gameArea .table .animaAction.diamonds, main .gameArea .table .animaAction.clubs {
+  background: url("../img/cards.gif") no-repeat;
+}
+main .gameArea .table .animaAction.hearts {
+  background-position: -23px -72px;
+  background-size: 2300% 1150%;
+}
+main .gameArea .table .animaAction.spades {
+  background-position: -23px -350px;
+  background-size: 2300% 1150%;
+}
+main .gameArea .table .animaAction.diamonds {
+  background-position: -23px -210px;
+  background-size: 2300% 1150%;
+}
+main .gameArea .table .animaAction.clubs {
+  background-position: -23px -488px;
+  background-size: 2300% 1150%;
 }
 main .gameArea .table .player {
   background-color: black;
@@ -80,10 +207,15 @@ main .gameArea .table .player.player3 {
   transform: translate(-50%, -50%);
 }
 main .gameArea .table .player.player3 .card {
-  top: calc(100% + 50px);
+  top: calc(100% + 50px + 5px);
 }
 main .gameArea .table .player.player3 .card.played {
-  top: calc(100% + 50px + 110px + 20px);
+  top: calc(100% + 50px + 110px + 20px - 5px);
+}
+main .gameArea .table .player.player3 .animaAction {
+  top: calc(100% - 5px + 55px + 30px);
+  left: 50%;
+  transform: translateX(-50%);
 }
 main .gameArea .table .player.player2 {
   top: 50%;
@@ -92,11 +224,16 @@ main .gameArea .table .player.player2 {
 }
 main .gameArea .table .player.player2 .card {
   top: calc(50% + var(--position) * 80px / 3 - var(--total) * 80px / 6 - 40px);
-  left: calc(100% + 60px);
+  left: calc(100% + 50px + 20px);
   transform: rotate(90deg);
 }
 main .gameArea .table .player.player2 .card.played {
-  left: calc(100% + 60px + 110px + 20px);
+  left: calc(100% + 50px + 10px + 110px + 20px);
+}
+main .gameArea .table .player.player2 .animaAction {
+  left: calc(100% - 5px + 55px + 30px);
+  top: 50%;
+  transform: translateY(-50%);
 }
 main .gameArea .table .player.player1 {
   bottom: 50px;
@@ -104,7 +241,12 @@ main .gameArea .table .player.player1 {
   transform: translate(-50%, 50%);
 }
 main .gameArea .table .player.player1 .card.played {
-  bottom: calc(100% + 50px + 110px + 20px);
+  bottom: calc(100% + 50px + 110px + 20px - 5px);
+}
+main .gameArea .table .player.player1 .animaAction {
+  bottom: calc(100% - 5px + 55px + 30px);
+  left: 50%;
+  transform: translateX(-50%);
 }
 main .gameArea .table .player.player4 {
   top: 50%;
@@ -113,12 +255,17 @@ main .gameArea .table .player.player4 {
 }
 main .gameArea .table .player.player4 .card {
   top: calc(50% + var(--position) * 80px / 3 - var(--total) * 80px / 6 - 40px);
-  right: calc(100% + 60px);
+  right: calc(100% + 70px);
   left: unset;
   transform: rotate(90deg);
 }
 main .gameArea .table .player.player4 .card.played {
-  right: calc(100% + 60px + 110px + 20px);
+  right: calc(100% + 50px + 10px + 110px + 20px);
+}
+main .gameArea .table .player.player4 .animaAction {
+  right: calc(100% - 5px + 55px + 30px);
+  top: 50%;
+  transform: translateY(-50%);
 }
 main .gameArea .table .player::after {
   content: "";
